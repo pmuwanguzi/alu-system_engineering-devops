@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # ssh script to connect to server with private key for authentication
 
-ssh -i ~/school ubuntu@3.84.44.53
+ssh -i ../school ubuntu@3.84.44.53
