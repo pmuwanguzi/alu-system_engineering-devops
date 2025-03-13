@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Script to generate private key pair using rsa size set to 4096
+
+ssh-keygen -t rsa -b 4096 -f school -N "betty"
