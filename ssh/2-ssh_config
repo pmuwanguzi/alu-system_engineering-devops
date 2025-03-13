@@ -1,0 +1,6 @@
+#This is to enable ssh without passord authentication 
+#But simply using the the private key "~/.ssh/school"
+
+Host *
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
