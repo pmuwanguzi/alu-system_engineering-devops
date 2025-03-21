@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#This is a script to help run ssh connectection using the key.
 
 # Check if the correct number of arguments is passed
 if [ "$#" -lt 4 ]; then
