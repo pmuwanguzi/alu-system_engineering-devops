@@ -1,2 +1,28 @@
 #!/usr/bin/env bash
 #This is a script to help run ssh connectection using the key.
+
+
+# This is to exit incase of any error
+set -e
+
+# Incase of any updates required
+apt-get update -y
+
+# This is an install command to install nginx incase it's not installed.
+apt-get install -y nginx
+
+# HTML file created with the string "Holberton School for the win!"
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Start nginx using service
+service nginx start
+
+# Ensuring that the site is running with the default parameters
+if [ ! -f /etc/nginx/sites-enabled/default ]; then
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+fi
+
+# Necessary reload of service incase of changes.
+service nginx reload
+
+exit 0
