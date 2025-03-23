@@ -1,21 +1,31 @@
 #!/usr/bin/env bash
-# Script to install Nginx and configure a custom 404 page
+# Install Nginx and configure a custom 404 page with specific content
 
-set -e  # Exit on error
+set -e
 
-# Update and install Nginx
+# Install Nginx
 apt-get update -y
 apt-get install -y nginx
 
-# Create a simple index.html for the root
+# Create the index page
 echo "Holberton School for the win!" > /var/www/html/index.html
 
-# Create the custom 404 page inside /var/www/html
-echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
+# Create the custom 404 page with the required content
+cat << EOF > /var/www/html/404.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 Not Found</title>
+</head>
+<body>
+    <h1>Ceci n'est pas une page</h1>
+</body>
+</html>
+EOF
 
-# Insert the error_page directive into the Nginx default server block
-sed -i '/server_name _;/a \\n    error_page 404 /custom_404.html;\n' /etc/nginx/sites-available/default
+# Update the Nginx default config to use the custom 404 page
+sed -i '/server_name _;/a \\n    error_page 404 /404.html;\n' /etc/nginx/sites-available/default
 
-# Restart Nginx (without systemctl) and reload
+# Start Nginx (no systemctl)
 service nginx start
 service nginx reload
