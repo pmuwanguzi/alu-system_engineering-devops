@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Automates nginx setup with a custom response header
+
+set -e
+
+# Install Nginx
+apt-get update -y
+apt-get install -y nginx
+
+# Set a default index page
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Inject custom HTTP response header using hostname
+sed -i '/server_name _;/a \\n    add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
+
+# Start or reload nginx (avoiding systemctl)
+service nginx start || service nginx reload
