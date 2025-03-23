@@ -10,12 +10,12 @@ apt-get install -y nginx
 # Create a simple index.html for the root
 echo "Holberton School for the win!" > /var/www/html/index.html
 
-# Create the custom 404 page
+# Create the custom 404 page inside /var/www/html
 echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
 
-# Add the 404 error_page configuration using sed
-sed -i '/server_name _;/a error_page 404 /custom_404.html;\nlocation = /custom_404.html {\n    root /var/www/html;\n    internal;\n}' /etc/nginx/sites-available/default
+# Insert the error_page directive into the Nginx default server block
+sed -i '/server_name _;/a \\n    error_page 404 /custom_404.html;\n' /etc/nginx/sites-available/default
 
-# Start and reload Nginx using service
+# Restart Nginx (without systemctl) and reload
 service nginx start
 service nginx reload
