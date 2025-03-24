@@ -1,4 +1,4 @@
-#!/usr/bin/env Sbash
+#!/usr/bin/env bash
 # This is to help configure a loadbalancer to shere workload with two webservers
 
 # This is my student ID from intranet
