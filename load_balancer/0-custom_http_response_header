@@ -11,7 +11,7 @@ apt-get install -y nginx
 echo "Holberton School for the win!" > /var/www/html/index.html
 
 # Inject custom HTTP response header using hostname
-sed -i '/http {/a \ \ \ \ "add_header X-Served-By \$hostname;" "/etc/nginx/nginx.conf"
+sed -i '/http {/a \ \ \ \ "add_header X-Served-By \$hostname;" "/etc/nginx/sites-available/default"
 
 
 # Start or reload nginx (avoiding systemctl)
