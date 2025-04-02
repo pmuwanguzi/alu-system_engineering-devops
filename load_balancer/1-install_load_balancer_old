@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
-# This script configures HAProxy for load balancing between two web servers
+# This is to help configure a loadbalancer to shere workload with two webservers
 
-# Student ID from intranet
+# This is my student ID from intranet
 STUDENT_ID="6392"
-WEB01_IP="3.84.44.53"
-WEB02_IP="54.172.108.60"
-WEB01_HOSTNAME="${STUDENT_ID}-web-01"
-WEB02_HOSTNAME="${STUDENT_ID}-web-02"
-
+web-01="3.84.44.53"
+web-02="54.172.108.60"
 # Update and install haproxy
-apt-get update -y
-apt-get install -y haproxy
+apt update -y
+apt install -y haproxy
 
 # Enable HAProxy to start at boot
 sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
@@ -46,14 +43,12 @@ frontend http_front
 backend http_back
     balance roundrobin
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
-    server ${WEB01_HOSTNAME} ${WEB01_IP}:80 check
-    server ${WEB02_HOSTNAME} ${WEB02_IP}:80 check
+    server ${STUDENT_ID}-web-01 ${web-01}:80 check
+    server ${STUDENT_ID}-web-02 ${web-02}:80 check
 EOL
 
 # Restart HAProxy
 systemctl restart haproxy
 systemctl enable haproxy
 
-echo "HAProxy installed and configured with roundrobin load balancing between:"
-echo "- ${WEB01_HOSTNAME} (${WEB01_IP})"
-echo "- ${WEB02_HOSTNAME} (${WEB02_IP})"
+echo "HAProxy installed and configured with roundrobin load balancing."
