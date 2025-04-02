@@ -54,6 +54,7 @@ EOL
 systemctl restart haproxy
 systemctl enable haproxy
 
-echo "HAProxy installed and configured with roundrobin load balancing between:"
-echo "- ${WEB01_HOSTNAME} (${WEB01_IP})"
-echo "- ${WEB02_HOSTNAME} (${WEB02_IP})"
+# Output the required information
+echo "HAProxy configured with roundrobin algorithm for:"
+echo "web-01: ${WEB01_HOSTNAME} (${WEB01_IP})"
+echo "web-02: ${WEB02_HOSTNAME} (${WEB02_IP})"
