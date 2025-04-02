@@ -1,30 +1,25 @@
 #!/usr/bin/env bash
-# HAProxy Load Balancer Configuration Script
+# This is to help configure a loadbalancer to shere workload with two webservers
 
-# Student information
+# This is my student ID from intranet
 STUDENT_ID="6392"
+web-01="3.84.44.53"
+web-02="54.172.108.60"
+# Update and install haproxy
+apt update -y
+apt install -y haproxy
 
-# Web server information
-WEB01_IP="3.84.44.53"
-WEB02_IP="54.172.108.60"
-WEB01_HOSTNAME="${STUDENT_ID}-web-01"
-WEB02_HOSTNAME="${STUDENT_ID}-web-02"
-
-# Update system and install HAProxy
-apt-get update -y
-apt-get install -y haproxy
-
-# Enable HAProxy service
+# Enable HAProxy to start at boot
 sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 
-# Backup original configuration
+# Backup original config
 cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
 
-# Configure HAProxy
-cat > /etc/haproxy/haproxy.cfg <<EOF
+# Configure haproxy
+cat <<EOL > /etc/haproxy/haproxy.cfg
 global
-    log /dev/log local0
-    log /dev/log local1 notice
+    log /dev/log    local0
+    log /dev/log    local1 notice
     chroot /var/lib/haproxy
     stats socket /run/haproxy/admin.sock mode 660 level admin
     stats timeout 30s
@@ -33,13 +28,13 @@ global
     daemon
 
 defaults
-    log global
-    mode http
-    option httplog
-    option dontlognull
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
     timeout connect 5000
-    timeout client 50000
-    timeout server 50000
+    timeout client  50000
+    timeout server  50000
 
 frontend http_front
     bind *:80
@@ -48,18 +43,12 @@ frontend http_front
 backend http_back
     balance roundrobin
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
-    server ${WEB01_HOSTNAME} ${WEB01_IP}:80 check
-    server ${WEB02_HOSTNAME} ${WEB02_IP}:80 check
-EOF
+    server ${STUDENT_ID}-web-01 ${web-01}:80 check
+    server ${STUDENT_ID}-web-02 ${web-02}:80 check
+EOL
 
-# Restart and enable HAProxy
+# Restart HAProxy
 systemctl restart haproxy
 systemctl enable haproxy
 
-# Generate required output
-echo "web-01: ${WEB01_IP}"
-echo "web-02: ${WEB02_IP}"
-echo "HAProxy successfully configured with roundrobin algorithm"
-echo "Traffic will be distributed between:"
-echo "- ${WEB01_HOSTNAME}"
-echo "- ${WEB02_HOSTNAME}"
+echo "HAProxy installed and configured with roundrobin load balancing."
