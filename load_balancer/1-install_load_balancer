@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
-# This script configures HAProxy for load balancing between two web servers
+# HAProxy Load Balancer Configuration Script
 
-# Student ID from intranet
+# Student information
 STUDENT_ID="6392"
+
+# Web server information
 WEB01_IP="3.84.44.53"
 WEB02_IP="54.172.108.60"
 WEB01_HOSTNAME="${STUDENT_ID}-web-01"
 WEB02_HOSTNAME="${STUDENT_ID}-web-02"
 
-# Update and install haproxy
+# Update system and install HAProxy
 apt-get update -y
 apt-get install -y haproxy
 
-# Enable HAProxy to start at boot
+# Enable HAProxy service
 sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 
-# Backup original config
+# Backup original configuration
 cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
 
-# Configure haproxy
-cat <<EOL > /etc/haproxy/haproxy.cfg
+# Configure HAProxy
+cat > /etc/haproxy/haproxy.cfg <<EOF
 global
-    log /dev/log    local0
-    log /dev/log    local1 notice
+    log /dev/log local0
+    log /dev/log local1 notice
     chroot /var/lib/haproxy
     stats socket /run/haproxy/admin.sock mode 660 level admin
     stats timeout 30s
@@ -31,13 +33,13 @@ global
     daemon
 
 defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
+    log global
+    mode http
+    option httplog
+    option dontlognull
     timeout connect 5000
-    timeout client  50000
-    timeout server  50000
+    timeout client 50000
+    timeout server 50000
 
 frontend http_front
     bind *:80
@@ -48,13 +50,16 @@ backend http_back
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
     server ${WEB01_HOSTNAME} ${WEB01_IP}:80 check
     server ${WEB02_HOSTNAME} ${WEB02_IP}:80 check
-EOL
+EOF
 
-# Restart HAProxy
+# Restart and enable HAProxy
 systemctl restart haproxy
 systemctl enable haproxy
 
-# Output the required information
-echo "HAProxy configured with roundrobin algorithm for:"
-echo "web-01: ${WEB01_HOSTNAME} (${WEB01_IP})"
-echo "web-02: ${WEB02_HOSTNAME} (${WEB02_IP})"
+# Generate required output
+echo "web-01: ${WEB01_IP}"
+echo "web-02: ${WEB02_IP}"
+echo "HAProxy successfully configured with roundrobin algorithm"
+echo "Traffic will be distributed between:"
+echo "- ${WEB01_HOSTNAME}"
+echo "- ${WEB02_HOSTNAME}"
